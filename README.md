@@ -1,8 +1,8 @@
-# Commerce Cloud Spartacus Storefront Visual Search Sample
+# SAP Commerce Cloud Spartacus Storefront Visual Search Sample
 
 ## Description
 
-A set of extensions and add-ons for CCv2, micro services and the Spartacus Storefront components that allow consumers to search for products by uploading a picture.
+This sample contains a set of extensions and add-ons for SAP Commerce Cloud (CCv2), microservices, and the Spartacus Storefront components that allow consumers to search for products by uploading a picture.
 
 Visual Search is an integration with Spartacus and SAP Commerce Cloud. This allows a user to search for products with an image. Therefore the user uploads an image which is analyzed by a third party (e.g. Syte.ai). As result, the user sees the image with bounding boxes. To search for a product, the user clicks on the corresponding item and the search page displays similar products that are in your product catalog.
 
