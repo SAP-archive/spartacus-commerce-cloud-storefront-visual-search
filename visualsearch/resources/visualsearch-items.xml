@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ Copyright (c) 2020 SAP SE or an SAP affiliate company. All rights reserved
+-->
+<!--
+	ATTENTION: This is just an example file. You have to edit it according to your needs.
+-->
+
+<items 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:noNamespaceSchemaLocation="items.xsd">
+	
+	<enumtypes>
+		<enumtype code="VisualSearchSyncResult" autocreate="true" generate="true">
+            <description>The result reports on how the visual search synchronization last run was.</description>
+            <value code="RUNNING">
+                <description>The data synchronization process is running.</description>
+            </value>
+            <value code="SUCCESS">
+                <description>The data feed has been successfully synchronized</description>
+            </value>
+            <value code="FAILURE">
+                <description>The data feed synchronization process has not been successful. Check the CronJob's log for details.</description>
+            </value>
+            <value code="UNKNOWN">
+                <description>No result is available</description>
+            </value>
+        </enumtype>
+	</enumtypes>
+
+	<maptypes>
+		<maptype code="VisualSearchValueProviderParametersMapping" argumenttype="java.lang.String" returntype="java.lang.String" />
+	</maptypes>	
+
+	<relations>
+		<relation code="VisualSearchIndexConfig2VisualSearchIndexedProperty" autocreate="true" generate="true" localized="false">
+			<sourceElement qualifier="visualSearchIndexConfig" type="VisualSearchIndexConfig" cardinality="one">
+				<modifiers optional="true" read="true" write="true" search="true" />
+			</sourceElement>
+			<targetElement qualifier="visualSearchIndexedProperties" type="VisualSearchIndexedProperty" cardinality="many"
+				collectiontype="list" ordered="true">
+				<modifiers optional="true" read="true" write="true" search="false" partof="true" />
+			</targetElement>
+		</relation>
+		
+		<relation code="VisualSearchConfig2VisualSearchIndexerCronJob" autocreate="true" generate="true" localized="false">
+			<sourceElement qualifier="visualSearchConfig" type="VisualSearchConfig" cardinality="one">
+				<modifiers optional="false" read="true" write="true" search="true" />
+			</sourceElement>
+			<targetElement qualifier="visualSearchIndexerCronJob" type="VisualSearchIndexerCronJob" cardinality="many"
+				collectiontype="list" ordered="true">
+				<modifiers optional="true" read="true" write="true" search="false" />
+			</targetElement>
+		</relation>
+		
+		<relation code="VisualSearchConfig2VisualSearchSyncStatusCronJob" autocreate="true" generate="true" localized="false">
+			<sourceElement qualifier="visualSearchConfig" type="VisualSearchConfig" cardinality="one">
+				<modifiers optional="false" read="true" write="true" search="true" />
+			</sourceElement>
+			<targetElement qualifier="visualSearchSyncStatusCronJob" type="VisualSearchSyncStatusCronJob" cardinality="many"
+				collectiontype="list" ordered="true">
+				<modifiers optional="true" read="true" write="true" search="false" />
+			</targetElement>
+		</relation>
+
+	</relations>
+	
+	<itemtypes>
+	
+	<itemtype code="VisualSearchConfig" extends="GenericItem" autocreate="true" generate="true">
+			<deployment table="VisualSearchConfig" typecode="12211" />
+			<attributes>
+				<attribute qualifier="name" type="java.lang.String">
+					<description>name of the Config</description>
+					<modifiers initial="true" read="true" write="false" optional="false" search="true" unique="true" />
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="description" type="java.lang.String">
+					<description>description of the Config</description>
+					<modifiers read="true" write="true" optional="true" search="true" />
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="indexConfig" type="VisualSearchIndexConfig">
+					<modifiers read="true" write="true" optional="false" />
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="serverConfig" type="VisualSearchServerConfig">
+					<modifiers read="true" write="true" optional="true" />
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="indexName" type="java.lang.String">
+					<persistence type="property" />
+				</attribute>	
+				<attribute qualifier="status" type="VisualSearchSyncResult">
+					<persistence type="property" />
+					<defaultvalue>em().getEnumerationValue("VisualSearchSyncResult", "UNKNOWN")</defaultvalue>
+				</attribute>
+				<attribute qualifier="lastSyncTime" type="java.util.Date">
+					<persistence type="property" />
+				</attribute>
+			</attributes>
+		</itemtype>
+		
+		<itemtype code="VisualSearchIndexConfig" autocreate="true" generate="true" extends="GenericItem">
+			<deployment table="VisualSearchIndexConfig" typecode="12212" />
+			<attributes>
+				<attribute qualifier="name" type="java.lang.String">
+					<description>unique identifier of indexer configuration</description>
+					<modifiers initial="true" read="true" write="false" optional="false" search="true" unique="true" />
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="query" type="java.lang.String">
+					<persistence type="property">
+						<columntype>
+							<value>HYBRIS.LONG_STRING</value>
+						</columntype>
+					</persistence>
+					<modifiers optional="false" />
+				</attribute>
+				<attribute qualifier="user" type="User">
+					<persistence type="property" />
+					<modifiers optional="false" />
+				</attribute>
+				<attribute qualifier="catalogVersion" type="CatalogVersion">
+					<persistence type="property" />
+					<modifiers optional="false" initial="true" read="true" write="false" />
+				</attribute>
+				<attribute qualifier="batchSize" type="int">
+					<defaultvalue>Integer.valueOf(1000)</defaultvalue>
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="exportPath" type="java.lang.String">
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="maxBatchRetries" type="int">
+					<defaultvalue>Integer.valueOf(3)</defaultvalue>
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="nodeGroup" type="java.lang.String">
+					<description>allows to control on which node group of a cluster process will be executed in case of distributed indexing</description>
+					<modifiers optional="true" />
+					<persistence type="property" />
+				</attribute>
+			</attributes>
+		</itemtype>
+		
+		<itemtype code="VisualSearchServerConfig" autocreate="true" generate="true" extends="GenericItem">
+			<deployment table="VisualSearchServerConfig" typecode="12213" />
+			<attributes>
+				<attribute qualifier="name" type="java.lang.String">
+					<description>unique identifier of solr configuration</description>
+					<modifiers initial="true" read="true" write="false" optional="false" search="true" unique="true" />
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="url" type="java.lang.String">
+					<modifiers read="true" write="true" optional="false" search="true" />
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="port" type="java.lang.Integer">
+					<modifiers read="true" write="true" optional="false" search="true" />
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="username" type="java.lang.String">
+					<persistence type="property" />
+					<modifiers read="true" write="true" optional="false" search="false" />
+				</attribute>
+				<attribute qualifier="password" type="java.lang.String">
+					<persistence type="property" />
+					<modifiers encrypted="true" optional="false" />
+				</attribute>
+				<attribute qualifier="destinationPath" type="java.lang.String">
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="maxTotalConnections" type="java.lang.Integer">
+					<defaultvalue>Integer.valueOf(10)</defaultvalue>
+					<persistence type="property" />
+					<description>Sets the maximum total connections allowed</description>
+				</attribute>
+				<attribute qualifier="triggerSyncUrl" type="java.lang.String">
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="syncStatusUrl" type="java.lang.String">
+					<persistence type="property" />
+				</attribute>
+			</attributes>
+		</itemtype>
+		
+		<itemtype code="VisualSearchIndexedProperty" autocreate="true" generate="true" extends="GenericItem">
+			<deployment table="VisualSearchIndexedProp" typecode="12228" />
+			<attributes>
+				<attribute qualifier="name" type="java.lang.String">
+					<description>name of the property</description>
+					<persistence type="property" />
+					<modifiers initial="true" read="true" write="false" search="true" optional="false" />
+				</attribute>
+                <attribute qualifier="displayName" type="java.lang.String">
+                    <description>The display name for this property in the data feed.</description>
+                    <modifiers optional="false" />
+                    <persistence type="property" />
+                </attribute>
+                <attribute qualifier="fieldValueProvider" type="java.lang.String">
+					<description>fieldValueProvider for visual search used by this property</description>
+					<defaultvalue>visualSearchModelAttributeProvider</defaultvalue>
+					<persistence type="property" />
+					<modifiers optional="false" />
+				</attribute>
+				<attribute qualifier="valueProviderParameters" type="VisualSearchValueProviderParametersMapping">
+					<persistence type="property" />
+				</attribute>
+			</attributes>
+		</itemtype>
+
+		<itemtype code="VisualSearchIndexerCronJob" extends="CronJob" autocreate="true" generate="true" />
+		
+		<itemtype code="VisualSearchSyncStatusCronJob" extends="CronJob" autocreate="true" generate="true" />
+        
+        <!-- DISTRIBUTED INDEXING -->
+		<itemtype code="VisualSearchIndexerDistributedProcess" autocreate="true" generate="true" extends="SimpleDistributedProcess">
+			<attributes>
+				<attribute qualifier="sessionUser" type="java.lang.String">
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="indexOperationId" type="long">
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="visualSearchConfig" type="java.lang.String">
+					<persistence type="property" />
+				</attribute>
+				<attribute qualifier="exportPath" type="java.lang.String">
+					<persistence type="property" />
+				</attribute>
+			</attributes>
+		</itemtype>
+
+		<itemtype code="VisualSearchIndexerBatch" autocreate="true" generate="true" extends="SimpleBatch" />
+
+	</itemtypes>
+</items>

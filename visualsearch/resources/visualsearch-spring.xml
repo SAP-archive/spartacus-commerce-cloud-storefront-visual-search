@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (c) 2020 SAP SE or an SAP affiliate company. All rights reserved
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<bean id="visualSearchFacetSearchQuerySortsPopulator" class="de.hybris.platform.visualsearch.populators.VisualSearchFacetSearchQuerySortsPopulator" >
+		<property name="fieldNameTranslator" ref="fieldNameTranslator" />
+	</bean>
+	
+	<bean parent="modifyPopulatorList">
+		<property name="list" ref="facetSearchQueryConverter" />
+		<property name="add" ref="visualSearchFacetSearchQuerySortsPopulator" />	
+	</bean>
+	
+	<alias name="defaultSolrVisualSearchListener" alias="solrVisualSearchListener" />
+	<bean id="defaultSolrVisualSearchListener" class="de.hybris.platform.visualsearch.listeners.SolrVisualSearchListener" />
+
+	<!-- using negative priority to force the listener to be the last one applied -->
+	<bean id="solrVisualSearchListenerDefinition" parent="solrListenerDefinition">
+		<property name="listener" ref="solrVisualSearchListener" />
+	</bean>
+	
+    <bean id="visualSearchRestTemplate" class="org.springframework.web.client.RestTemplate" />
+    
+	<!-- DISTRIBUTED INDEXING -->
+	<alias name="defaultVisualSearchIndexerStrategy" alias="visualSearchIndexerStrategy"/>
+	<bean id="defaultVisualSearchIndexerStrategy" class="de.hybris.platform.visualsearch.indexer.strategies.impl.DefaultVisualSearchIndexerStrategy">
+		<property name="distributedProcessService" ref="distributedProcessService" />
+		<property name="indexOperationIdKeyGenerator" ref="indexOperationIdKeyGenerator" />
+		<property name="modelService" ref="modelService" />
+		<property name="tenantService" ref="tenantService" />
+		<property name="userService" ref="userService" />
+		<property name="cronJobService" ref="cronJobService" />
+		<property name="i18NService" ref="i18NService" />
+		<property name="restTemplate" ref="visualSearchRestTemplate" />
+	</bean>
+	
+	<alias name="defaultVisualSearchIndexerDistributedProcessHandler" alias="visualSearchIndexerDistributedProcessHandler"/>
+	<bean id="defaultVisualSearchIndexerDistributedProcessHandler" 
+		class="de.hybris.platform.visualsearch.indexer.strategies.impl.DefaultVisualSearchIndexerDistributedProcessHandler" 
+		parent="abstractSimpleDistributedProcessHandler" >
+		<constructor-arg ref="visualSearchIndexerBatchProcessor" />
+	</bean>
+	
+	<alias name="defaultVisualSearchIndexerBatchProcessor" alias="visualSearchIndexerBatchProcessor"/>
+	<bean id="defaultVisualSearchIndexerBatchProcessor" class="de.hybris.platform.visualsearch.indexer.impl.DefaultVisualSearchIndexerBatchProcessor" >
+		<property name="visualSearchConfigGenericDao" ref="visualSearchConfigGenericDao"/>
+		<property name="flexibleSearchService" ref="flexibleSearchService"/>
+		<property name="visualSearchIndexer" ref="visualSearchIndexer"/>
+	</bean>
+	
+	<alias name="defaultSSHDPool" alias="sshdPool"/>
+	<bean id="defaultSSHDPool" class="de.hybris.platform.visualsearch.indexer.sftp.impl.DefaultVisualSearchSSHDPool" />
+	
+	<alias name="defaultVisualSearchConfigGenericDao" alias="visualSearchConfigGenericDao"/>
+    <bean name="defaultVisualSearchConfigGenericDao" class="de.hybris.platform.servicelayer.internal.dao.DefaultGenericDao">
+        <constructor-arg value="VisualSearchConfig"/>
+    </bean>
+	
+	<alias name="defaultVisualSearchIndexerService" alias="visualSearchIndexerService"/>
+	<bean id="defaultVisualSearchIndexerService" class="de.hybris.platform.visualsearch.indexer.impl.DefaultVisualSearchIndexerService">
+		<property name="sessionService" ref="sessionService" />
+		<property name="tenantService" ref="tenantService" />
+		<property name="modelService" ref="modelService" />
+		<property name="userService" ref="userService" />
+		<property name="flexibleSearchService" ref="flexibleSearchService" />
+		<property name="visualSearchIndexerStrategy" ref="visualSearchIndexerStrategy" />
+	</bean>
+		
+	<alias name="defaultVisualSearchIndexer" alias="visualSearchIndexer"/>
+	<bean id="defaultVisualSearchIndexer" class="de.hybris.platform.visualsearch.indexer.impl.DefaultVisualSearchIndexer" >
+	<property name="sshdPool" ref="sshdPool"/>
+	</bean>
+	
+	<bean id="visualSearchModelAttributeProvider" class="de.hybris.platform.visualsearch.indexer.providers.impl.VisualSearchModelAttributeProvider">
+		<property name="modelService" ref="modelService" />
+		<property name="typeService" ref="typeService" />
+		<property name="sessionService" ref="sessionService" />
+		<property name="i18nService" ref="i18nService" />
+		<property name="catalogVersionService" ref="catalogVersionService" />
+		
+	</bean>
+	
+	<bean id="visualSearchImageUrlValueProvider" class="de.hybris.platform.visualsearch.indexer.providers.impl.VisualSearchImageUrlValueProvider" >
+		<property name="configurationService" ref="configurationService" />
+	</bean>
+	
+	<bean id="visualSearchCategoryNameValueProvider" class="de.hybris.platform.visualsearch.indexer.providers.impl.VisualSearchCategoryNameValueProvider" parent="visualSearchModelAttributeProvider" />
+
+	<bean id="visualSearchIndexerJob" class="de.hybris.platform.visualsearch.cron.VisualSearchIndexerJob"
+		parent="abstractJobPerformable" >
+		<property name="visualSearchIndexerService" ref="visualSearchIndexerService" />
+	</bean>
+	
+	<bean id="visualSearchSyncStatusJob" class="de.hybris.platform.visualsearch.cron.VisualSearchSyncStatusJob" parent="abstractJobPerformable" >
+		<property name="i18NService" ref="i18NService" />
+	</bean>
+
+</beans>

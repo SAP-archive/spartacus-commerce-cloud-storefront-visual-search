@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+ Copyright (c) 2020 SAP SE or an SAP affiliate company. All rights reserved
+-->
+<config xmlns="http://www.hybris.com/cockpit/config" xmlns:y="http://www.hybris.com/cockpit/config/hybris">
+	
+	<context component="explorer-tree" merge-by="module">
+        <explorer-tree:explorer-tree xmlns:explorer-tree="http://www.hybris.com/cockpitng/config/explorertree">
+            <explorer-tree:navigation-node id="hmc_treenode_system">
+                <explorer-tree:navigation-node id="hmc.solrfacetsearch">
+                    <explorer-tree:navigation-node id="hmc_treenode_solr_visualsearch">
+                        <explorer-tree:type-node code="VisualSearchConfig" id="hmc_type_tree_visualsearchconfig"/>
+                    </explorer-tree:navigation-node>
+                </explorer-tree:navigation-node>
+            </explorer-tree:navigation-node>
+        </explorer-tree:explorer-tree>
+    </context>
+	
+	<context type="VisualSearchConfig">
+		<context merge-by="type" parent="GenericItem" component="base">
+			<y:base>
+				<y:labels>
+					<y:label>name</y:label>
+				</y:labels>
+			</y:base>
+		</context>
+
+		<context merge-by="type" parent="GenericItem" component="listview">
+			<list-view:list-view xmlns:list-view="http://www.hybris.com/cockpitng/component/listView"
+				refresh-after-object-creation="true">
+				<list-view:column qualifier="name" />
+				<list-view:column qualifier="description" />
+			</list-view:list-view>
+		</context>
+		
+		<context merge-by="type" parent="GenericItem" component="simple-search">
+			<simple-search:simple-search xmlns:simple-search="http://www.hybris.com/cockpitng/config/simplesearch">
+				<simple-search:field xmlns="http://www.hybris.com/cockpitng/config/simplesearch" name="name" />
+				<simple-search:sort-field name="name" asc="true" />
+			</simple-search:simple-search>
+		</context>
+		
+		<context component="create-wizard">
+			<wz:flow xmlns:wz="http://www.hybris.com/cockpitng/config/wizard-config" id="visual-search-config-create-wizard"
+				title="create.title(ctx.TYPE_CODE)">
+				<wz:prepare id="prepareVisualSearchConfig">
+					<wz:initialize property="newItem" type="ctx.TYPE_CODE" />
+				</wz:prepare>
+				<wz:step id="step1" label="create.visualsearchconfig.essential.label" sublabel="create.visualsearchconfig.essential.sublabel">
+					<wz:content id="step1.content">
+						<wz:property-list root="newItem">
+							<wz:property qualifier="name" />
+							<wz:property qualifier="description" />
+							<wz:property qualifier="indexConfig">
+								<wz:editor-parameter>
+									<wz:name>isNestedObjectCreationDisabled</wz:name>
+									<wz:value>false</wz:value>
+								</wz:editor-parameter>
+							</wz:property>
+							<wz:property qualifier="serverConfig">
+								<wz:editor-parameter>
+									<wz:name>isNestedObjectCreationDisabled</wz:name>
+									<wz:value>false</wz:value>
+								</wz:editor-parameter>
+							</wz:property>
+						</wz:property-list>
+					</wz:content>
+					<wz:navigation id="step1.navigation">
+						<wz:cancel />
+						<wz:done visible="newItem.name != null AND newItem.indexConfig != null AND newItem.serverConfig != null" >
+							<wz:save property="newItem" />
+						</wz:done>
+					</wz:navigation>
+				</wz:step>
+			</wz:flow>
+		</context>
+		
+		<context merge-by="type" component="editor-area">
+			<editorArea:editorArea xmlns:editorArea="http://www.hybris.com/cockpitng/component/editorArea">
+				<editorArea:tab name="hmc.tab.configuration.properties">
+					<editorArea:section name="hmc.sec.configuration.properties">
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="name" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="description" />
+					</editorArea:section>
+					<editorArea:section name="hmc.sec.configuration.visualsearchindexerconfig">
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="indexConfig" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="serverConfig" />
+					</editorArea:section>
+					
+					<editorArea:section name="hmc.sec.configuration.visualsearchsynchronization">
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="indexName" readonly="true" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="status" readonly="true" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="lastSyncTime" readonly="true" />
+					</editorArea:section>
+					
+				</editorArea:tab>
+				<editorArea:tab name="hmc.tab.configuration.visualsearchindexerconfig.cronjobs">
+					<editorArea:section name="hmc.sec.configuration.visualsearchindexerconfig.cronjobs">
+						<editorArea:panel name="solrIndexerCronJobPanel" colspan="4">
+							<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" editor="com.hybris.cockpitng.editor.extendedmultireferenceeditor"
+								qualifier="visualSearchIndexerCronJob">
+								<editorArea:editor-parameter>
+									<editorArea:name>listConfigContext</editorArea:name>
+									<editorArea:value>referenceListView</editorArea:value>
+								</editorArea:editor-parameter>
+								<editorArea:editor-parameter>
+									<editorArea:name>selectedItemsMaxSize</editorArea:name>
+									<editorArea:value>7</editorArea:value>
+								</editorArea:editor-parameter>
+							</editorArea:attribute>
+						</editorArea:panel>
+					</editorArea:section>
+				</editorArea:tab>
+			</editorArea:editorArea>
+		</context>
+
+		<context merge-by="type" parent="GenericItem" component="editorareaactions">
+			<y:actions xmlns:y="http://www.hybris.com/cockpit/config/hybris">
+				<y:group qualifier="common">
+					<y:label>actiongroup.common</y:label>
+					<y:action action-id="com.hybris.cockpitng.action.delete" property="currentObject" />
+					<y:action action-id="de.hybris.platform.visualsearchbackoffice.actions.visualsearchindexer" property="currentObject" />
+				</y:group>
+			</y:actions>
+		</context>
+	</context>
+	
+	<context type="VisualSearchIndexerCronJob">
+		<context component="referenceListView">
+			<list-view:list-view xmlns:list-view="http://www.hybris.com/cockpitng/component/listView">
+				<list-view:column qualifier="code" />
+				<list-view:column qualifier="job" />
+				<list-view:column qualifier="status" />
+				<list-view:column qualifier="result" />
+				<list-view:column qualifier="startTime" />
+				<list-view:column qualifier="endTime" />
+			</list-view:list-view>
+		</context>
+	</context>
+	
+	<context type="VisualSearchServerConfig">
+		<context merge-by="type" parent="GenericItem" component="base">
+			<y:base>
+				<y:labels>
+					<y:label>name</y:label>
+				</y:labels>
+			</y:base>
+		</context>
+
+		<context merge-by="type" parent="GenericItem" component="listview">
+			<list-view:list-view xmlns:list-view="http://www.hybris.com/cockpitng/component/listView"
+				refresh-after-object-creation="true">
+				<list-view:column qualifier="name" />
+				<list-view:column qualifier="url" />
+				<list-view:column qualifier="port" />
+				<list-view:column qualifier="destinationPath" />
+				<list-view:column qualifier="syncStatusUrl" />
+			</list-view:list-view>
+		</context>
+		
+		<context merge-by="type" parent="GenericItem" component="simple-search">
+			<simple-search:simple-search xmlns:simple-search="http://www.hybris.com/cockpitng/config/simplesearch">
+				<simple-search:field xmlns="http://www.hybris.com/cockpitng/config/simplesearch" name="name" />
+				<simple-search:sort-field name="name" asc="true" />
+			</simple-search:simple-search>
+		</context>
+		
+		<context component="create-wizard">
+			<wz:flow xmlns:wz="http://www.hybris.com/cockpitng/config/wizard-config" id="visual-search-server-config-create-wizard"
+				title="create.title(ctx.TYPE_CODE)">
+				<wz:prepare id="prepareVisualSearchServerConfig">
+					<wz:initialize property="newItem" type="ctx.TYPE_CODE" />
+				</wz:prepare>
+				<wz:step id="step1" label="create.visualsearchserverconfig.label" >
+					<wz:content id="step1.content">
+						<wz:property-list root="newItem">
+							<wz:property qualifier="name" />
+							<wz:property qualifier="url" />
+							<wz:property qualifier="port" />
+							<wz:property qualifier="username" />
+							<wz:property qualifier="password" />
+							<wz:property qualifier="destinationPath" />
+							<wz:property qualifier="maxTotalConnections" />
+							<wz:property qualifier="syncStatusUrl" />
+							<wz:property qualifier="triggerSyncUrl" />
+						</wz:property-list>
+					</wz:content>
+					<wz:navigation id="step1.navigation">
+						<wz:cancel />
+						<wz:done visible="!#empty(newItem.name) AND !#empty(newItem.url) AND (newItem.port != null) AND !#empty(newItem.username) AND !#empty(newItem.password)">
+							<wz:save property="newItem" />
+						</wz:done>
+					</wz:navigation>
+				</wz:step>
+			</wz:flow>
+		</context>
+		
+		<context merge-by="type" component="editor-area">
+			<editorArea:editorArea xmlns:editorArea="http://www.hybris.com/cockpitng/component/editorArea">
+				<editorArea:tab name="hmc.tab.configuration.properties">
+					<editorArea:section name="hmc.tab.configuration.visualsearchserverconfig">
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="name" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="url" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="port" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="username" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="password" editor="com.hybris.cockpitng.editor.defaultpassword"/>
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="destinationPath" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="maxTotalConnections" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="syncStatusUrl" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="triggerSyncUrl" />
+					</editorArea:section>
+				</editorArea:tab>
+			</editorArea:editorArea>
+		</context>
+	</context>
+	
+	<context type="VisualSearchIndexedProperty">
+		<context merge-by="type" parent="GenericItem" component="base">
+			<y:base>
+				<y:labels>
+					<y:label>name</y:label>
+				</y:labels>
+			</y:base>
+		</context>
+
+		<context merge-by="type" parent="GenericItem" component="listview">
+			<list-view:list-view xmlns:list-view="http://www.hybris.com/cockpitng/component/listView"
+				refresh-after-object-creation="true">
+				<list-view:column qualifier="name" />
+				<list-view:column qualifier="displayName" />
+				<list-view:column qualifier="fieldValueProvider" />
+				<list-view:column qualifier="valueProviderParameters" />
+			</list-view:list-view>
+		</context>
+		
+		<context component="referenceListView">
+			<list-view:list-view xmlns:list-view="http://www.hybris.com/cockpitng/component/listView">
+				<list-view:column qualifier="name" />
+				<list-view:column qualifier="displayName" />
+			</list-view:list-view>
+		</context>
+		
+		<context component="inLineEditorConfig">
+			<list-view:list-view xmlns:list-view="http://www.hybris.com/cockpitng/component/listView">
+				<list-view:column qualifier="name" />
+				<list-view:column qualifier="displayName" />
+			</list-view:list-view>
+		</context>
+		
+		<context merge-by="type" parent="GenericItem" component="simple-search">
+			<simple-search:simple-search xmlns:simple-search="http://www.hybris.com/cockpitng/config/simplesearch">
+				<simple-search:field xmlns="http://www.hybris.com/cockpitng/config/simplesearch" name="name" />
+				<simple-search:sort-field name="name" asc="true" />
+			</simple-search:simple-search>
+		</context>
+		
+		<context component="create-wizard">
+			<wz:flow xmlns:wz="http://www.hybris.com/cockpitng/config/wizard-config" id="visual-search-indexed-property-create-wizard"
+				title="create.title(ctx.TYPE_CODE)">
+				<wz:prepare id="prepareVisualSearchIndexedProperty">
+					<wz:initialize property="newItem" type="ctx.TYPE_CODE" />
+				</wz:prepare>
+				<wz:step id="step1" label="create.visualsearchindexedproperty.label" >
+					<wz:content id="step1.content">
+						<wz:property-list root="newItem">
+							<wz:property qualifier="name" />
+							<wz:property qualifier="displayName" />
+							<wz:property qualifier="fieldValueProvider" />
+							<wz:property qualifier="valueProviderParameters" />
+						</wz:property-list>
+					</wz:content>
+					<wz:navigation id="step1.navigation">
+						<wz:cancel />
+						<wz:done visible="!#empty(newItem.name) AND !#empty(newItem.displayName) AND !#empty(newItem.fieldValueProvider)">
+							<wz:save property="newItem" />
+						</wz:done>
+					</wz:navigation>
+				</wz:step>
+			</wz:flow>
+		</context>
+		
+		<context merge-by="type" component="editor-area">
+			<editorArea:editorArea xmlns:editorArea="http://www.hybris.com/cockpitng/component/editorArea">
+				<editorArea:tab name="hmc.tab.configuration.properties">
+					<editorArea:section name="hmc.tab.configuration.visualsearchindexedproperty">
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="name" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="displayName" />
+						<editorArea:attribute editor="de.hybris.platform.solrfacetsearchbackoffice.editor.configurabledropdowneditor" qualifier="fieldValueProvider">
+							<editorArea:editor-parameter>
+								<editorArea:name>dropDownValueClassTypes</editorArea:name>
+								<editorArea:value>de.hybris.platform.visualsearch.indexer.providers.VisualSearchValueProvider</editorArea:value> 
+							</editorArea:editor-parameter>
+							<editorArea:editor-parameter>
+								<editorArea:name>dropDownValuesProvider</editorArea:name>
+								<editorArea:value>beansDropdownValuesProvider</editorArea:value>
+							</editorArea:editor-parameter>
+						</editorArea:attribute>
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="valueProviderParameters" />
+					</editorArea:section>
+				</editorArea:tab>
+			</editorArea:editorArea>
+		</context>
+	</context>
+
+	<context type="VisualSearchIndexConfig">
+		<context merge-by="type" parent="GenericItem" component="base">
+			<y:base>
+				<y:labels>
+					<y:label>name</y:label>
+				</y:labels>
+			</y:base>
+		</context>
+
+		<context merge-by="type" parent="GenericItem" component="listview">
+			<list-view:list-view xmlns:list-view="http://www.hybris.com/cockpitng/component/listView"
+				refresh-after-object-creation="true">
+				<list-view:column qualifier="name" />
+			</list-view:list-view>
+		</context>
+		
+		<context component="inLineEditorConfig">
+			<list-view:list-view xmlns:list-view="http://www.hybris.com/cockpitng/component/listView">
+				<list-view:column qualifier="name" />
+			</list-view:list-view>
+		</context>
+		
+		<context merge-by="type" parent="GenericItem" component="simple-search">
+			<simple-search:simple-search xmlns:simple-search="http://www.hybris.com/cockpitng/config/simplesearch">
+				<simple-search:field xmlns="http://www.hybris.com/cockpitng/config/simplesearch" name="name" />
+				<simple-search:sort-field name="name" asc="true" />
+			</simple-search:simple-search>
+		</context>
+		
+		<context component="create-wizard">
+			<wz:flow xmlns:wz="http://www.hybris.com/cockpitng/config/wizard-config" id="visual-search-index-config-create-wizard" title="create.title(ctx.TYPE_CODE)">
+				<wz:prepare id="prepareVisualSearchIndexConfig">
+					<wz:initialize property="newItem" type="ctx.TYPE_CODE" />
+				</wz:prepare>
+				<wz:step id="step1" label="create.visualsearchindexconfig.essential.label" sublabel="create.visualsearchindexconfig.essential.sublabel">
+					<wz:content id="step1.content">
+						<wz:property-list root="newItem">
+							<wz:property qualifier="name" />
+							<wz:property qualifier="catalogVersion" />
+							<wz:property qualifier="query" />
+							<wz:property qualifier="user" />
+							<wz:property qualifier="exportPath" />
+						</wz:property-list>
+					</wz:content>
+					<wz:navigation id="step1.navigation">
+						<wz:cancel />
+						<wz:next visible="!#empty(newItem.name) AND (newItem.catalogVersion != null) and !#empty(newItem.query) and (newItem.user != null)" />
+						<wz:done visible="!#empty(newItem.name) AND (newItem.catalogVersion != null) and !#empty(newItem.query) and (newItem.user != null)">
+							<wz:save property="newItem" />
+						</wz:done>
+					</wz:navigation>
+				</wz:step>
+				<wz:step id="step2" label="create.visualsearchindexconfig.batch.labe" >
+					<wz:content id="step2.content">
+						<wz:property-list root="newItem">
+							<wz:property qualifier="batchSize" />
+							<wz:property qualifier="maxBatchRetries" />
+							<wz:property qualifier="nodeGroup" />
+						</wz:property-list>
+					</wz:content>
+					<wz:navigation id="step2.navigation">
+						<wz:cancel />
+						<wz:back />
+						<wz:next visible="!#empty(newItem.name) AND (newItem.catalogVersion != null) and !#empty(newItem.query) AND (newItem.user != null) AND !#empty(newItem.exportPath)" />
+						<wz:done visible="!#empty(newItem.name) AND (newItem.catalogVersion != null) and !#empty(newItem.query) AND (newItem.user != null) AND !#empty(newItem.exportPath)">
+							<wz:save property="newItem" />
+						</wz:done>
+					</wz:navigation>
+				</wz:step>
+				<wz:step id="step3" label="create.visualsearchindexconfig.properties.label" sublabel="create.visualsearchindexconfig.properties.sublabel">
+				<wz:content id="step3.content">
+					<wz:property-list root="newItem">
+						<wz:property qualifier="visualSearchIndexedProperties" editor="com.hybris.cockpitng.editor.extendedmultireferenceeditor">
+							<wz:editor-parameter>
+								<wz:name>isNestedObjectCreationDisabled</wz:name>
+								<wz:value>false</wz:value>
+							</wz:editor-parameter>
+						</wz:property>
+					</wz:property-list>
+				</wz:content>
+				<wz:navigation id="step2.navigation">
+					<wz:cancel />
+					<wz:back />
+					<wz:done visible="!#empty(newItem.name) AND (newItem.catalogVersion != null) and !#empty(newItem.query) AND (newItem.user != null) AND !#empty(newItem.exportPath)">
+						<wz:save property="newItem" />
+					</wz:done>
+				</wz:navigation>
+			</wz:step>
+			</wz:flow>
+		</context>
+		
+		<context merge-by="type" component="editor-area">
+			<editorArea:editorArea xmlns:editorArea="http://www.hybris.com/cockpitng/component/editorArea">
+				<editorArea:tab name="hmc.tab.configuration.properties">
+					<editorArea:section name="hmc.tab.configuration.visualsearchindexconfig">
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="name" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="query" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="user" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="catalogVersion" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="batchSize" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="exportPath" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="maxBatchRetries" />
+						<editorArea:attribute xmlns="http://www.hybris.com/cockpitng/component/editorArea" qualifier="nodeGroup" />
+					</editorArea:section>
+				</editorArea:tab>
+				<editorArea:tab name="hmc.tab.configuration.indexedtype.indexedproperties">
+					<editorArea:section name="hmc.sec.configuration.indexedtype.indexedproperties">
+						<editorArea:panel name="visualSearchIndexedPropertiesPanel" colspan="4">
+							<editorArea:attribute qualifier="visualSearchIndexedProperties" editor="com.hybris.cockpitng.editor.extendedmultireferenceeditor">
+								<editorArea:editor-parameter>
+									<editorArea:name>listConfigContext</editorArea:name>
+									<editorArea:value>inLineEditorConfig</editorArea:value>
+								</editorArea:editor-parameter>
+								<editorArea:editor-parameter>
+									<editorArea:name>inlineEditing</editorArea:name>
+									<editorArea:value>true</editorArea:value>
+								</editorArea:editor-parameter>
+							</editorArea:attribute>
+						</editorArea:panel>
+					</editorArea:section>
+				</editorArea:tab>
+			</editorArea:editorArea>
+		</context>
+	</context>
+</config>

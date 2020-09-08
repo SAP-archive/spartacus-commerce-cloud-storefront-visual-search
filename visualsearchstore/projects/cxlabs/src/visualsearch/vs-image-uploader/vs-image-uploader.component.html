@@ -1,0 +1,11 @@
+<input
+  class="inputfile"
+  id="cx-image-upload"
+  type="file"
+  accept="image/*"
+  (change)="upload($event)"
+  onclick="value = null"
+/>
+<label for="cx-image-upload" [class.uploaded]="imageData$ | async">
+  <cx-icon type="CAMERA" aria-label="upload" tabindex="1"></cx-icon>
+</label>

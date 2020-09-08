@@ -1,0 +1,15 @@
+$productCatalog=visualsearchProductCatalog
+
+INSERT_UPDATE VisualSearchServerConfig;name[unique=true];url;port;username;password
+;default;localhost;22;ussername;password
+
+INSERT_UPDATE VisualSearchIndexConfig;name[unique=true];query;user(uid);catalogVersion(catalog(id),version)
+;default;"SELECT {p:PK} FROM {Product AS p} WHERE {p:varianttype} IS NULL";anonymous;$productCatalog:Online
+
+INSERT_UPDATE VisualSearchIndexedProperty;visualSearchIndexConfig(name)[unique=true];name[unique=true];displayName;fieldValueProvider;valueProviderParameters
+;default;code;code;visualSearchModelAttributeProvider;attribute->code;
+;default;category;category;visualSearchCategoryNameValueProvider;attribute->supercategories;
+;default;imageUrl;image url;visualSearchImageUrlValueProvider;siteUid->visualsearch;
+
+INSERT_UPDATE VisualSearchConfig;name[unique=true];description;indexConfig(name);serverConfig(name)
+;default;Default configuration for Visual Search;default;default

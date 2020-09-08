@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (c) 2020 SAP SE or an SAP affiliate company. All rights reserved.
+-->
+<action-definition id="de.hybris.platform.visualsearchbackoffice.actions.visualsearchindexer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://www.hybris.com/schema/cockpitng/action-definition.xsd">
+
+   <name>SAP Visual Search Synchronize Catalog</name>
+   <description>Visual Search Synchronize Product Catalog</description>
+   <author>hybris</author>
+   <version>1.0</version>
+   
+   	<iconUri>icons/icon_action_cs_sync_catalog_default.png</iconUri>
+	<iconDisabledUri>icons/icon_action_cs_sync_catalog_disabled.png</iconDisabledUri>
+	<iconHoverUri>icons/icon_action_cs_sync_catalog_hover.png</iconHoverUri>
+
+   <actionClassName>de.hybris.platform.visualsearch.backoffice.actions.VisualSearchIndexerAction</actionClassName>
+   <customRendererClassName>de.hybris.platform.visualsearch.backoffice.actions.renderers.VisualSearchIndexerActionRenderer</customRendererClassName>
+   	
+   <inputType>java.lang.Object</inputType>
+   <outputType>java.lang.Object</outputType>
+
+</action-definition>

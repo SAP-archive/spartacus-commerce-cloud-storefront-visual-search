@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '~@spartacus/styles/index';
+
+/** customize spartacus styling to allow for the image uploader UI */
+cx-page-slot.SearchBox {
+  display: flex;
+  cx-searchbox,
+  cx-image-uploader {
+    flex: 0 1 auto;
+    label {
+      height: 100%;
+    }
+  }
+}

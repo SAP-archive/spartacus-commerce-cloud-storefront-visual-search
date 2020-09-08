@@ -1,0 +1,29 @@
+.SearchResultsListPageTemplate {
+  .Section2 {
+    display: flex;
+
+    cx-image-holder {
+      position: relative;
+      display: inline-block;
+      flex: none;
+
+      img {
+        width: 25vw;
+      }
+
+      a {
+        display: block;
+        border: solid 2px rgba(255, 255, 255, 1);
+        position: absolute;
+        &:hover {
+          border: solid 2px rgba(255, 255, 255, 1);
+          background: rgba(255, 255, 255, 0.3);
+        }
+        &:active {
+          background: rgba(255, 255, 255, 0.3);
+          border: solid 2px rgba(24, 73, 193, 1);
+        }
+      }
+    }
+  }
+}

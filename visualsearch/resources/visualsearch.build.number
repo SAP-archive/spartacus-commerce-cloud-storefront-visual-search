@@ -1,0 +1,11 @@
+#Ant properties
+#Wed Jan 22 21:48:32 UTC 2020
+version.api=2005
+vendor=hybris
+group.id=de.hybris.platform
+name=visualsearch
+description=visualsearch
+builddate=20200122 2148
+releasedate=20200122 2148
+version=2005.0
+module.name=platform-module

@@ -1,0 +1,20 @@
+<ng-container *ngIf="imageData$ | async as imageData">
+  <ng-container *ngIf="imageData.isVisualSearchRoute">
+    <a
+      *ngFor="let rect of imageData.data.bb"
+      [title]="rect.title"
+      [style.left.%]="rect.left"
+      [style.top.%]="rect.top"
+      [style.width.%]="rect.width"
+      [style.height.%]="rect.height"
+      [routerLink]="
+        {
+          cxRoute: 'search',
+          params: { query: 'visual-' + rect.id }
+        } | cxUrl
+      "
+    >
+    </a>
+    <img [src]="imageData.data.source" />
+  </ng-container>
+</ng-container>
