@@ -1,3 +1,5 @@
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/spartacus-commerce-cloud-storefront-visual-search)](https://api.reuse.software/info/github.com/SAP-samples/spartacus-commerce-cloud-storefront-visual-search)
+
 # SAP Commerce Cloud Spartacus Storefront Visual Search Sample
 
 ## Description
@@ -105,7 +107,5 @@ No known issues at the moment.
 In case you find a bug or need support, please [open an issue](https://github.com/SAP-samples/commerce-cloud-spartacus-storefront-visual-search-sample/issues/new).
 
 ## License
-
-[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/spartacus-commerce-cloud-storefront-visual-search)](https://api.reuse.software/info/github.com/SAP-samples/spartacus-commerce-cloud-storefront-visual-search)
 
 Copyright (c) 2020 SAP SE or an SAP affiliate company. All rights reserved. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSES/Apache-2.0.txt) file.
